@@ -10,6 +10,7 @@
     "消费到期",
     "退货回拨",
     "余额对账",
+    "退货同步",
     "期末归档"
   ],
   "rule": "消费先用最早到期批次；退款按原消费分配逆向恢复，已过期部分不得复活",
@@ -29,6 +30,7 @@
     "consumption",
     "refund",
     "reconcile",
+    "sync",
     "archive"
   ],
   "labels": {
@@ -58,6 +60,10 @@
     "refunded": "退款",
     "expired": "到期",
     "points_balanced": "积分守恒",
-    "allocations": "回拨批次"
+    "allocations": "回拨批次",
+    "refund": "退款号",
+    "key": "幂等键",
+    "status": "状态",
+    "receipt": "回执"
   }
 }

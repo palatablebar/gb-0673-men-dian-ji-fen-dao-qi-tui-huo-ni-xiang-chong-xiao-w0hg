@@ -12,7 +12,8 @@
 | M4 消费到期 | 执行并复核消费到期 | `POST /api/consumption` | `app/modules/consumption/rules.py` | `tests/test_consumption.py` |
 | M5 退货回拨 | 执行并复核退货回拨 | `POST /api/refund` | `app/modules/refund/rules.py` | `tests/test_refund.py` |
 | M6 余额对账 | 执行并复核余额对账 | `POST /api/reconcile` | `app/modules/reconcile/rules.py` | `tests/test_reconcile.py` |
-| M7 期末归档 | 执行并复核期末归档 | `POST /api/archive` | `app/modules/archive/rules.py` | `tests/test_archive.py` |
+| M7 退货同步 | 执行并复核退货同步 | `POST /api/sync` | `app/modules/sync/rules.py`、`app/syncstore.py` | `tests/test_sync.py` |
+| M8 期末归档 | 执行并复核期末归档 | `POST /api/archive` | `app/modules/archive/rules.py` | `tests/test_archive.py` |
 
 ## 陷阱登记
 
@@ -29,6 +30,10 @@
 | TRAP-11 | UTC归一 | 静默错算或证据丢失 | 以可复核规则显式处理 | `app/modules/policy/rules.py` | `tests/test_policy.py::test_utc_real` |
 | TRAP-06 | 全角积分 | 静默错算或证据丢失 | 以可复核规则显式处理 | `app/modules/policy/rules.py` | `tests/test_policy.py::test_fullwidth_points` |
 | TRAP-23 | 权益半开窗 | 静默错算或证据丢失 | 以可复核规则显式处理 | `app/modules/policy/rules.py` | `tests/test_policy.py::test_rule_end_exclusive` |
+| TRAP-31 | 回执丢失立即重发致同一冲销重复加减 | 盲目重试双倍恢复 | 冻结待核，查证证明前次未生效才补发 | `app/syncstore.py` | `tests/test_sync.py::test_lost_receipt_freezes_then_confirms_without_reapply` |
+| TRAP-32 | 重试/重发同一批重复生效 | 以调用次数记账 | 业务内容幂等键，会员中心按键去重 | `app/modules/sync/rules.py`、`app/syncstore.py` | `tests/test_sync.py::test_retry_same_batch_no_new_effect` |
+| TRAP-33 | 切换失败丢旧版同步结果 | 就地覆盖当前版本 | 版本只追加，当前指针原子切换，失败不动旧版 | `app/syncstore.py` | `tests/test_sync.py::test_failed_switch_keeps_old_version` |
+| TRAP-34 | 覆盖原始退货依据断复核链 | 更新原批记录 | 输入快照不可变，发布版本带证据摘要只追加 | `app/store.py`、`app/syncstore.py` | `tests/test_sync.py::test_evidence_chain_kept` |
 
 ## 对账规则
 
